@@ -35,11 +35,16 @@ function main(){
 	ul.append('<li><a href="#playYT" onClick="stopPlayingYT()"> Zatrzymaj</a></li>');
 	
 	block.append(ul);
-	$('.grid-right').prepend(block);	
+		$('.grid-right').prepend(block);
 	});
 	
 	window.playNextYT = function (){
-		var v_id = $($('.video a[class= ajax]')[0]).attr('href').split('=')[1];
+		var v_id = '';
+
+		$.each($($('.video a[class= ajax]')[2]).attr('href').split('?')[1].split('&'), function(i, p){
+			if(p[0] === 'v' && p[1] === '=')
+				v_id = (p.split('=')[1]);
+		});
 
 		var embed = $('<embed id="ytplayer" style="height: 390px; width: 640px" allowfullscreen="true" allowscriptaccess="always" quality="high" bgcolor="#000000" name="playerid" style="" src="http://www.youtube.com/v/'+v_id+'?enablejsapi=1&version=3&playerapiid=ytplayer" type="application/x-shockwave-flash" type="application/x-shockwave-flash">');
 
