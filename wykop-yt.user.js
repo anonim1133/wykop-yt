@@ -41,7 +41,7 @@ function main(){
 	window.playNextYT = function (){
 		var v_id = '';
 
-		$.each($($('.video a[class= ajax]')[2]).attr('href').split('?')[1].split('&'), function(i, p){
+		$.each($($('.video a[class= ajax]')[0]).attr('href').split('?')[1].split('&'), function(i, p){
 			if(p[0] === 'v' && p[1] === '=')
 				v_id = (p.split('=')[1]);
 		});
