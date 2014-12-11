@@ -2,7 +2,7 @@
 // @name          Wykopowy odtwarzacz muzyki
 // @description   Odtwarza muzukę spod tagów
 // @include       http://www.wykop.pl/tag/*
-// @version       0.2
+// @version       0.2.1
 // ==/UserScript==
 
 
@@ -76,7 +76,7 @@ function main(){
 				window.removeFirst();
 					playFirst();
 					
-				if($('.entry').size() < 10){
+				if($('.video a[class= ajax]').size() < 10){
 					$('.pager a').click();
 					$("html, body").animate({ scrollTop: $(document).height() }, "slow");
 					$("html, body").animate({ scrollTop: 0 }, "slow");
