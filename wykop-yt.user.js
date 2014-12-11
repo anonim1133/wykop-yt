@@ -72,7 +72,7 @@ function main(){
 		
 		onPlayerStateChange = function (state) {
 			if (state === 0) {
-				$('.entry')[0].remove();
+				$($('.video a[class= ajax]')[0]).parent().parent().parent().parent().parent().remove();
 					playNextYT();
 					
 				if($('.entry').size() < 10){
