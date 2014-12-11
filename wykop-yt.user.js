@@ -2,7 +2,7 @@
 // @name          Wykopowy odtwarzacz muzyki
 // @description   Odtwarza muzukę spod tagów
 // @include       http://www.wykop.pl/tag/*
-// @version       0.2.2
+// @version       0.3
 // ==/UserScript==
 
 
@@ -74,8 +74,9 @@ function main(){
 		}
 		
 		ytplayer.addEventListener("onStateChange", "onPlayerStateChange");
-		
+
 		onPlayerStateChange = function (state) {
+			console.log("State: " + state);
 			if (state === 0) {
 				window.removeFirst();
 					playFirst();
@@ -87,6 +88,12 @@ function main(){
 				}
 			}
 		};
+
+		ytplayer.addEventListener("onError", "onPlayerError");
+
+		onPlayerError = function (state) {
+			playNext();
+		}
 	}
 
 	window.playNext = function(){
