@@ -2,7 +2,7 @@
 // @name          Wykopowy odtwarzacz muzyki
 // @description   Odtwarza muzukę spod tagów
 // @include       http://www.wykop.pl/tag/*
-// @version       0.1
+// @version       0.2
 // ==/UserScript==
 
 
@@ -31,14 +31,15 @@ function main(){
 			var block = $('<div>').addClass('r-block');
 	var ul = $('<ul>').addClass('menu-list');;
 	block.append('<h4>Odtwarzacz YouTube</h4>');
-	ul.append('<li><a href="#playYT" onClick="playNextYT()">Odtwarzaj </a></li>');
-	ul.append('<li><a href="#playYT" onClick="stopPlayingYT()"> Zatrzymaj</a></li>');
+	ul.append('<li><a href="#playYT" onClick="playFirst()"> Odtwarzaj </a></li>');
+		ul.append('<li><a href="#playNext" onClick="playNext()"> Następna </a></li>');
+	ul.append('<li><a href="#stopYT" onClick="stopPlaying()"> Zatrzymaj</a></li>');
 	
 	block.append(ul);
 		$('.grid-right').prepend(block);
 	});
 	
-	window.playNextYT = function (){
+	window.playFirst = function (){
 		var v_id = '';
 
 		$.each($($('.video a[class= ajax]')[0]).attr('href').split('?')[1].split('&'), function(i, p){
@@ -52,7 +53,7 @@ function main(){
 		$($('.video')[0]).after(player);
 	}
 	
-	window.stopPlayingYT = function (){
+	window.stopPlaying = function (){
 		var ytplayer = document.getElementById("ytplayer");
 		 if (ytplayer) {
 			ytplayer.removeEventListener("onStateChange", "onPlayerStateChange");
@@ -72,8 +73,8 @@ function main(){
 		
 		onPlayerStateChange = function (state) {
 			if (state === 0) {
-				$($('.video a[class= ajax]')[0]).parent().parent().parent().parent().parent().remove();
-					playNextYT();
+				window.removeFirst();
+					playFirst();
 					
 				if($('.entry').size() < 10){
 					$('.pager a').click();
@@ -82,5 +83,23 @@ function main(){
 				}
 			}
 		};
+	}
+
+	window.playNext = function(){
+		console.log('next');
+		window.removeFirst();
+		window.playFirst();
+	}
+
+	window.removeFirst = function(){
+		console.log('remove first');
+
+		var entry = $($('#player')).parent().parent().parent().parent();
+
+		if(entry.length == 0){
+			entry = $($('.video a[class= ajax]')[0]).parent().parent().parent().parent().parent();
+		}
+
+		entry.remove();
 	}
 }
