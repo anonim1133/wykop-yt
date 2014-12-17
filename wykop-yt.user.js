@@ -2,7 +2,8 @@
 // @name          Wykopowy odtwarzacz muzyki
 // @description   Odtwarza muzukę spod tagów
 // @include       http://www.wykop.pl/tag/*
-// @version       0.3
+// @include       http://www.wykop.pl/mikroblog/*
+// @version       0.4.1
 // ==/UserScript==
 
 
@@ -28,15 +29,46 @@ function addJQuery(callback) {
 
 function main(){
 	$( document ).ready(function() {
+		if(window.location.pathname.split('/')[1] === 'tag'){
 			var block = $('<div>').addClass('r-block');
-	var ul = $('<ul>').addClass('menu-list');;
-	block.append('<h4>Odtwarzacz YouTube</h4>');
-	ul.append('<li><a href="#playYT" onClick="playFirst()"> Odtwarzaj </a></li>');
-		ul.append('<li><a href="#playNext" onClick="playNext()"> Następna </a></li>');
-	ul.append('<li><a href="#stopYT" onClick="stopPlaying()"> Zatrzymaj</a></li>');
-	
-	block.append(ul);
-		$('.grid-right').prepend(block);
+			var ul = $('<ul>').addClass('menu-list');;
+			block.append('<h4>Odtwarzacz YouTube</h4>');
+			ul.append('<li><a href="#playYT" onClick="playFirst()"> Odtwarzaj </a></li>');
+			ul.append('<li><a href="#playNext" onClick="playNext()"> Następna </a></li>');
+			ul.append('<li><a href="#stopYT" onClick="stopPlaying()"> Zatrzymaj</a></li>');
+
+			block.append(ul);
+			$('.grid-right').prepend(block);
+		}
+
+		$('.openAddMediaOverlay.button').after($('.openAddMediaOverlay.button').clone().html('<img style="width:13px; height: 13px;" src="http://www.cssauthor.com/wp-content/uploads/2013/07/Youtube-iOS7-Icon-cssauthor.com_.png" />').click(function(){
+			setTimeout(function(){
+				$('.addMediaOverlay button.submit').append('<img style="width: 16px; height: 16px;top: 4px;left: 6px;position: relative;" src="http://www.cssauthor.com/wp-content/uploads/2013/07/Youtube-iOS7-Icon-cssauthor.com_.png">').click(function(){
+					var v_id = '';
+					var url = $('input[type=text].embedUrl').val();
+					if(url.match('youtu.be') !== null) {
+						v_id = $($('.video a[class= ajax]')[0]).attr('href').split('/')[3];
+					}else{
+						$.each(url.split('?')[1].split('&'), function(i, p){
+							if(p[0] === 'v' && p[1] === '=')
+								v_id = (p.split('=')[1]);
+						});
+					}
+
+					$.getJSON("https://www.googleapis.com/youtube/v3/videos", {
+						key: "AIzaSyABRqX9-Z6mGx7MPfISllCE0eP1uGCMoX8",
+						part: "snippet",
+						id: v_id
+					}, function(data) {
+						if (data.items.length > 0) {
+							$('#commentForm > div > fieldset.arrow_box > textarea').append('#muzyka ['+data.items[0].snippet.title+']('+url+')');
+						}
+
+					}).fail(function() {});
+				});
+			}, 500);
+		}));
+
 	});
 	
 	window.playFirst = function (){
@@ -76,7 +108,6 @@ function main(){
 		ytplayer.addEventListener("onStateChange", "onPlayerStateChange");
 
 		onPlayerStateChange = function (state) {
-			console.log("State: " + state);
 			if (state === 0) {
 				window.removeFirst();
 					playFirst();
@@ -113,4 +144,5 @@ function main(){
 
 		entry.remove();
 	}
+
 }
